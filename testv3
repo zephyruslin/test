@@ -1,0 +1,75 @@
+#include <iostream>
+#include <algorithm>
+#include <unordered_set>
+#include <fstream>
+#include <vector>
+#include <time.h>
+//#include "hash.h"
+using namespace std;
+
+//Hash hash;
+unordered_set<string> hashT;
+
+inline bool cmp(string s1, string s2){//按长度从大到小排
+    return s2.length() < s1.length();
+}
+
+bool MakeOfWords(string word, long long length){
+    //cout<<"curr: "<<word<<endl;
+    long long len = word.length();
+    //cout<<"len:"<<len<<endl;
+    if(len == 0) return true;
+
+    for(int i=1; i<=len; ++i){
+        if(i == length) return false;//取到原始串，即自身
+        string str = word.substr(0, i);
+        //cout<<str<<endl;
+        if(hashT.find(str)!=hashT.cend()){
+            if(MakeOfWords(word.substr(i), length))
+                return true;
+        }
+    }
+    return false;
+}
+
+void PrintLongestWord(vector<string> word, int n){
+    for(int i=0; i<n; ++i)
+        hashT.insert(word[i]);
+    sort(word.begin(), word.end(), cmp);
+	int count = 0;
+	int k=3;
+    for(int i=0; i<n; ++i){
+        if(MakeOfWords(word[i], word[i].length())){
+            //
+			if (k>=0){
+				cout<<"Longest Word: "<<word[i]<<endl;
+				k--;
+			}
+			count++;
+            //return;
+        }
+    }
+	cout << count << endl;
+}
+
+int main(){
+	clock_t t1,t2;
+    t1=clock();
+    //code goes here
+	ifstream infile("C:\\Users\\windyue\\Documents\\CodeLite\\LCW\\smalltest.txt");
+	string line;
+	vector<string> arr;
+	while (getline(infile, line)){
+		//cout << line << endl;
+		arr.push_back(line);
+	}	
+    //string LCW = trie->findLCW();
+	PrintLongestWord(arr, arr.size());
+    //cout << "Longest Compound World: " << LCW << endl;
+    t2=clock();
+    float diff ((float)t2-(float)t1);
+    cout<<diff/CLOCKS_PER_SEC <<endl;
+    //system ("pause");	
+	return 0;
+    
+}
